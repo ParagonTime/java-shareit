@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -33,6 +34,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(Long userId, Long itemId, UpdateItemRequest request) {
+        if (userId == null || userId < 0) {
+            throw new ValidationException("Invalid parameter: " + userId);
+        }
+        if (itemId == null || itemId < 0) {
+            throw new ValidationException("Invalid parameter: " + itemId);
+        }
+
         User user = userRepository.getUser(userId);
         Item item = itemRepository.getItem(itemId);
         if (!Objects.equals(item.getOwner(), user.getId())) {

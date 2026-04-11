@@ -1,11 +1,13 @@
 package ru.practicum.shareit.user;
 
+import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.exception.ConflictEmailException;
+import ru.practicum.shareit.exception.NoFoundException;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
@@ -28,7 +30,7 @@ public class InMemoryUserRepository {
 
     public User save(User user) {
         if (emails.contains(user.getEmail())) {
-            throw new IllegalArgumentException(DUPLICATE_EMAIL_MESSAGE + emails);
+            throw new ConflictEmailException(DUPLICATE_EMAIL_MESSAGE + emails);
         }
         User newUser = new User();
         newUser.setId(++countUsers);
@@ -43,7 +45,7 @@ public class InMemoryUserRepository {
         checkUserExist(userId);
         User userByEmail = getUserByEmail(user.getEmail());
         if (userByEmail != null && !Objects.equals(userByEmail.getId(), userId)) {
-            throw new IllegalArgumentException(DUPLICATE_EMAIL_MESSAGE + emails);
+            throw new ConflictEmailException(DUPLICATE_EMAIL_MESSAGE + emails);
         }
         base.put(userId, user);
         return base.get(userId);
@@ -68,7 +70,7 @@ public class InMemoryUserRepository {
 
     private void checkUserExist(Long userId) {
         if (!base.containsKey(userId)) {
-            throw new NoSuchElementException(NOT_FOUND_USER_MESSAGE + userId);
+            throw new NoFoundException(NOT_FOUND_USER_MESSAGE + userId);
         }
     }
 }

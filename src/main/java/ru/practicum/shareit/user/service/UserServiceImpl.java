@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
         if (request.getEmail() != null) {
             currentUser.setEmail(request.getEmail());
         }
-        User updated =  inMemoryUserRepository.updateUser(userId, currentUser);
+        User updated = inMemoryUserRepository.updateUser(userId, currentUser);
         return UserMapper.userToDto(updated);
     }
 

@@ -45,8 +45,14 @@ public class InMemoryItemRepository {
     }
 
     public List<Item> searchItems(Long userId, String text) {
+        if (text == null || text.isBlank()) {
+            return List.of();
+        }
+        String lowerText = text.toLowerCase();
         return base.values().stream()
-                .filter(itm -> itm.getName().contains(text) || itm.getDescription().contains(text))
+                .filter(Item::getAvailable)
+                .filter(itm -> itm.getName().toLowerCase().contains(lowerText) ||
+                        itm.getDescription().toLowerCase().contains(lowerText))
                 .toList();
     }
 }

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,14 +35,14 @@ public class ItemController {
     // @RequestHeader("X-Later-User-Id") long userId
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId,
                               @Valid @RequestBody NewItemRequest request) {
         return itemService.createItem(userId, request);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestHeader(HEADER) Long userId,
-                              @Positive(message = "itemId должен быть больше 0") @PathVariable("itemId") Long itemId,
+                              @PathVariable("itemId") Long itemId,
                               @Valid @RequestBody UpdateItemRequest request
     ) {
         return itemService.updateItem(userId, itemId, request);
@@ -49,7 +50,7 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemDto getItem(@RequestHeader(HEADER) Long userId,
-                           @Positive(message = "itemId должен быть больше 0") @PathVariable("itemId") Long itemId
+                           @PathVariable("itemId") Long itemId
     ) {
         return itemService.getItem(userId, itemId);
     }
