@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Component
 public class InMemoryItemRepository {
-    
+
     private final Map<Long, Item> base;
     private Long countItems;
 
@@ -18,7 +18,7 @@ public class InMemoryItemRepository {
         this.base = new HashMap<>();
         this.countItems = 0L;
     }
-    
+
     public Item saveItem(Item item) {
         item.setId(++countItems);
         base.put(item.getId(), item);

@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user;
 
-import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.ConflictEmailException;
 import ru.practicum.shareit.exception.NoFoundException;
