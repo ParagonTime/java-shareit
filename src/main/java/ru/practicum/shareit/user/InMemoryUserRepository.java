@@ -6,9 +6,8 @@ import ru.practicum.shareit.exception.NoFoundException;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Component
 public class InMemoryUserRepository {
@@ -18,25 +17,20 @@ public class InMemoryUserRepository {
 
 
     private final HashMap<Long, User> base;
-    private final Set<String> emails;
     private Long countUsers;
 
     public InMemoryUserRepository() {
         this.base = new HashMap<>();
-        this.emails = new HashSet<>();
         this.countUsers = 0L;
     }
 
     public User save(User user) {
-        if (emails.contains(user.getEmail())) {
-            throw new ConflictEmailException(DUPLICATE_EMAIL_MESSAGE + emails);
-        }
+        checkEmailExist(user.getEmail());
         User newUser = new User();
         newUser.setId(++countUsers);
         newUser.setName(user.getName());
         newUser.setEmail(user.getEmail());
         base.put(newUser.getId(), newUser);
-        emails.add(newUser.getEmail());
         return newUser;
     }
 
@@ -44,7 +38,7 @@ public class InMemoryUserRepository {
         checkUserExist(userId);
         User userByEmail = getUserByEmail(user.getEmail());
         if (userByEmail != null && !Objects.equals(userByEmail.getId(), userId)) {
-            throw new ConflictEmailException(DUPLICATE_EMAIL_MESSAGE + emails);
+            throw new ConflictEmailException(DUPLICATE_EMAIL_MESSAGE + userByEmail.getId());
         }
         base.put(userId, user);
         return base.get(userId);
@@ -70,6 +64,15 @@ public class InMemoryUserRepository {
     private void checkUserExist(Long userId) {
         if (!base.containsKey(userId)) {
             throw new NoFoundException(NOT_FOUND_USER_MESSAGE + userId);
+        }
+    }
+
+    private void checkEmailExist(String email) {
+        List<String> emails = base.values().stream()
+                .map(User::getEmail)
+                .toList();
+        if (emails.contains(email)) {
+            throw new ConflictEmailException(DUPLICATE_EMAIL_MESSAGE + email);
         }
     }
 }

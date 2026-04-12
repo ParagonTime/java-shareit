@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.exception.NoFoundException;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.HashMap;
@@ -13,6 +14,8 @@ public class InMemoryItemRepository {
 
     private final Map<Long, Item> base;
     private Long countItems;
+
+    private static final String NO_FOUND_ITEM = "Item не найден с id:";
 
     public InMemoryItemRepository() {
         this.base = new HashMap<>();
@@ -28,7 +31,7 @@ public class InMemoryItemRepository {
     public Item getItem(Long itemId) {
         Item item = base.get(itemId);
         if (item == null) {
-            throw new RuntimeException(); //не найден
+            throw new NoFoundException(NO_FOUND_ITEM + itemId);
         }
         return item;
     }

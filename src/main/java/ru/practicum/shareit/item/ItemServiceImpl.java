@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NoFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.NewItemRequest;
 import ru.practicum.shareit.item.dto.UpdateItemRequest;
@@ -19,6 +20,8 @@ public class ItemServiceImpl implements ItemService {
 
     private final InMemoryItemRepository itemRepository;
     private final InMemoryUserRepository userRepository;
+
+    private static final String NO_FOUND_ITEM = "Item не найден с id:";
 
     @Override
     public ItemDto createItem(Long userId, NewItemRequest request) {
@@ -44,7 +47,7 @@ public class ItemServiceImpl implements ItemService {
         User user = userRepository.getUser(userId);
         Item item = itemRepository.getItem(itemId);
         if (!Objects.equals(item.getOwner(), user.getId())) {
-            throw new RuntimeException(); // нет права доступа
+            throw new NoFoundException(NO_FOUND_ITEM + itemId);
         }
         if (request.getName() != null) {
             item.setName(request.getName());
